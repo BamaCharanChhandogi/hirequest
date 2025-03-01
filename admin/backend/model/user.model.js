@@ -30,7 +30,8 @@ const userSchema = new mongoose.Schema({
     cgpa: Number,
     resume: String, // URL to stored resume
     // For coordinators
-    employeeId: String
+    employeeId: String,
+    image: String // URL to stored image
   }
 }, { timestamps: true });
 

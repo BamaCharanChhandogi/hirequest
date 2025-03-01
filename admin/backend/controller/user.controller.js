@@ -143,7 +143,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
     
     // Validate input
     if (!email || !password) {
@@ -195,7 +194,8 @@ export const login = async (req, res) => {
             department: user.profile.department,
             year: user.profile.year,
             rollNumber: user.profile.rollNumber,
-            cgpa: user.profile.cgpa
+            cgpa: user.profile.cgpa,
+            image: user.profile.image,
           } : {
             employeeId: user.profile.employeeId
           })

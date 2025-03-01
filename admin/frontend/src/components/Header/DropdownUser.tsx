@@ -1,27 +1,58 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
+import { logoutUser, selectUser } from '../../redux/features/auth/authSlice.js';
+import { useDispatch, useSelector } from 'react-redux';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(selectUser);
 
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate('/auth/signin');
+  };
+
+  // If user is not logged in, show only the Login button
+  if (!user) {
+    return (
+      <Link
+        to="/auth/signin"
+        className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+      >
+        Login
+      </Link>
+    );
+  }
+
+  // If user is logged in, show the full dropdown
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
-        onClick={() => setDropdownOpen(!dropdownOpen)}
+       onClick={(e) => {
+        e.preventDefault(); // Prevent default behavior
+        setDropdownOpen((prev) => !prev);
+      }}
         className="flex items-center gap-4"
         to="#"
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Placement Coordinator
+            {user?.name || 'User'}
           </span>
-          <span className="block text-xs">UIC | E131628</span>
+          <span className="block text-xs">
+            {user?.role || 'UIC'}{' '}
+            {user?.id ? `| ${user.id.slice(-4)}` : ''}
+          </span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <img src="https://shubhadipbhowmik.vercel.app/me.png" alt="User" />
-        </span>
+        {user?.profile?.image && (
+          <span className="h-12 w-12 rounded-full">
+            <img src={user?.profile?.image} alt="User" />
+          </span>
+        )}
 
         <svg
           className="hidden fill-current sm:block"
@@ -40,7 +71,6 @@ const DropdownUser = () => {
         </svg>
       </Link>
 
-      {/* <!-- Dropdown Start --> */}
       {dropdownOpen && (
         <div
           className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark`}
@@ -98,7 +128,10 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul>
-          {/* <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+          <button
+            className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+            onClick={handleLogout}
+          >
             <svg
               className="fill-current"
               width="22"
@@ -117,10 +150,10 @@ const DropdownUser = () => {
               />
             </svg>
             Log Out
-          </button> */}
+          </button>
         </div>
       )}
-      {/* <!-- Dropdown End --> */}
+      {/* Dropdown End */}
     </ClickOutside>
   );
 };

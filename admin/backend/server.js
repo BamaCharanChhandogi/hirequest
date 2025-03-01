@@ -23,8 +23,11 @@ app.use(cors({
 // mongoose connection
 connectDB();
 // routes
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.get("/testing-server", (req, res) => {
+  res.send().status(200).json({
+    success: true,
+    message: "Server is testing",
+  });
 });
 app.use(routes);
 
